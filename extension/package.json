@@ -1,0 +1,19 @@
+{
+  "name": "chave-segura-extension",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Extensão Chrome (Manifest V3) do Chave Segura",
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "ci": "npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@types/chrome": "0.3.7",
+    "esbuild": "0.28.2",
+    "typescript": "7.0.2",
+    "vitest": "5.1.0"
+  }
+}
