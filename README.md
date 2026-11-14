@@ -128,37 +128,16 @@ Regras recomendadas:
 
 ### 4.1 Componentes
 
-  -----------------------------------------------------------------------
-  Componente              Tecnologia sugerida     Responsabilidade
-  ----------------------- ----------------------- -----------------------
-  Aplicativo Android      Kotlin + Jetpack        Interface, cofre,
-                          Compose                 autenticação e
-                                                  aprovações
-
-  Persistência local      Room + SQLite           Armazenamento local de
-                                                  dados criptografados
-
-  Proteção de chaves      Android Keystore        Proteção de material
-                                                  criptográfico
-
-  Extensão Chrome         TypeScript + Manifest   Reconhecimento de
-                          V3                      domínio, solicitações e
-                                                  preenchimento
-
-  Backend                 Python + FastAPI        Pareamento, sessões e
-                                                  encaminhamento de
-                                                  mensagens
-
-  Comunicação             WebSocket sobre TLS     Troca de mensagens
-                                                  entre dispositivos
-
-  Banco do servidor       SQLite no protótipo;    Metadados de
-                          PostgreSQL se           dispositivos e sessões
-                          necessário              
-
-  Infraestrutura          Docker e GitHub Actions Ambiente reproduzível e
-                                                  automação de testes
-  -----------------------------------------------------------------------
+| Componente | Tecnologia sugerida | Responsabilidade |
+| :--- | :--- | :--- |
+| Aplicativo Android | Kotlin + Jetpack Compose | Interface, cofre, autenticação e aprovações |
+| Persistência local | Room + SQLite | Armazenamento local de dados criptografados |
+| Proteção de chaves | Android Keystore | Proteção de material criptográfico |
+| Extensão Chrome | TypeScript + Manifest V3 | Reconhecimento de domínio, solicitações e preenchimento |
+| Backend | Python + FastAPI | Pareamento, sessões e encaminhamento de mensagens |
+| Comunicação | WebSocket sobre TLS | Troca de mensagens entre dispositivos |
+| Banco do servidor | SQLite no protótipo; PostgreSQL se necessário | Metadados de dispositivos e sessões |
+| Infraestrutura | Docker e GitHub Actions | Ambiente reproduzível e automação de testes |
 
 ### 4.2 Visão da arquitetura
 
@@ -259,48 +238,48 @@ criptografados antes de serem gravados.
 
 #### Tabela `credentials`
 
-  Campo                Tipo       Descrição
-  -------------------- ---------- ----------------------------
-  id                   UUID       Identificador
-  title                TEXT       Nome do serviço
-  username_encrypted   BLOB       Usuário criptografado
-  password_encrypted   BLOB       Senha criptografada
-  website_domain       TEXT       Domínio autorizado
-  category_id          UUID       Categoria
-  notes_encrypted      BLOB       Observações criptografadas
-  created_at           DATETIME   Data de criação
-  updated_at           DATETIME   Última atualização
+  Campo               | Tipo      | Descrição
+  --------------------| ----------| ----------------------------
+  id                  | UUID      | Identificador
+  title               | TEXT     |  Nome do serviço
+  username_encrypted  | BLOB      | Usuário criptografado
+  password_encrypted  | BLOB      | Senha criptografada
+  website_domain      | TEXT      | Domínio autorizado
+  category_id         | UUID     |  Categoria
+  notes_encrypted    |  BLOB      | Observações criptografadas
+  created_at         |  DATETIME  | Data de criação
+  updated_at         |  DATETIME  | Última atualização
 
 #### Tabela `categories`
 
-  Campo   Tipo   Descrição
-  ------- ------ -------------------
-  id      UUID   Identificador
-  name    TEXT   Nome da categoria
-  icon    TEXT   Ícone associado
+  Campo |  Tipo |  Descrição
+  ------- |------| -------------------
+  id    |  UUID |  Identificador
+  name  |  TEXT |  Nome da categoria
+  icon  |  TEXT |  Ícone associado
 
 #### Tabela `trusted_devices`
 
-  Campo                Tipo       Descrição
-  -------------------- ---------- ---------------------------
-  id                   UUID       Identificador
-  device_name          TEXT       Nome do dispositivo
-  public_key           TEXT       Chave pública
-  authorization_mode   TEXT       `approval` ou `automatic`
-  status               TEXT       Ativo ou revogado
-  created_at           DATETIME   Data do pareamento
-  last_seen            DATETIME   Última atividade
+  Campo          |      Tipo    |   Descrição
+  -------------------- | ----------| ---------------------------
+  id              |     UUID   |   Identificador
+  device_name      |    TEXT    |   Nome do dispositivo
+  public_key       |    TEXT     |  Chave pública
+  authorization_mode |  TEXT   |    `approval` ou `automatic`
+  status            |   TEXT    |   Ativo ou revogado
+  created_at      |     DATETIME |  Data do pareamento
+  last_seen       |     DATETIME |  Última atividade
 
 #### Tabela `security_events`
 
-  Campo           Tipo       Descrição
-  --------------- ---------- --------------------------------------
-  id              UUID       Identificador
-  event_type      TEXT       Tipo de evento
-  device_id       UUID       Dispositivo relacionado
-  credential_id   UUID       Credencial relacionada, se aplicável
-  timestamp       DATETIME   Data do evento
-  result          TEXT       Sucesso ou recusa
+  Campo       |    Tipo    |   Descrição
+  --------------- | ---------- | --------------------------------------
+  id            |  UUID   |    Identificador
+  event_type    |  TEXT  |     Tipo de evento
+  device_id      | UUID    |   Dispositivo relacionado
+  credential_id |  UUID   |    Credencial relacionada, se aplicável
+  timestamp    |   DATETIME |  Data do evento
+  result       |   TEXT    |   Sucesso ou recusa
 
 Não registrar senhas, tokens de sessão ou conteúdo de mensagens no
 histórico.
@@ -554,17 +533,17 @@ chave-segura/
 
 O sistema precisa demonstrar que falha de maneira segura.
 
-  Teste                              Resultado esperado
-  ---------------------------------- ---------------------------------------
-  Senha mestra incorreta             Cofre não é desbloqueado
-  QR Code expirado                   Pareamento recusado
-  QR Code reutilizado                Pareamento recusado
-  Dispositivo revogado               Solicitações recusadas
-  Domínio semelhante ao original     Preenchimento bloqueado
-  Servidor interceptando mensagens   Não consegue ler credenciais
-  Sessão automática expirada         Nova autorização necessária
-  Aplicativo desconectado            Modo de confirmação indisponível
-  Banco local copiado                Credenciais permanecem criptografadas
+  Teste                   |            Resultado esperado
+  --- | ---
+  Senha mestra incorreta       |      Cofre não é desbloqueado
+  QR Code expirado              |     Pareamento recusado
+  QR Code reutilizado            |    Pareamento recusado
+  Dispositivo revogado            |   Solicitações recusadas
+  Domínio semelhante ao original   |  Preenchimento bloqueado
+  Servidor interceptando mensagens |  Não consegue ler credenciais
+  Sessão automática expirada        | Nova autorização necessária
+  Aplicativo desconectado       |     Modo de confirmação indisponível
+  Banco local copiado           |     Credenciais permanecem criptografadas
 
 Também é necessário testar recuperação de acesso. Se a pessoa perder o
 celular e esquecer a senha mestra, o projeto deve explicar claramente
