@@ -1,0 +1,39 @@
+# Sistema / editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+
+# Claude Code (worktrees locais)
+.claude/worktrees/
+
+# Android / Gradle
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+android/captures/
+android/.kotlin/
+*.keystore
+*.jks
+
+# Extensão
+extension/node_modules/
+extension/dist/
+extension/coverage/
+
+# Backend
+backend/.venv/
+backend/**/__pycache__/
+backend/.pytest_cache/
+backend/.ruff_cache/
+backend/*.egg-info/
+backend/data/
+*.sqlite3
+*.db
+
+# Segredos locais
+.env
+.env.*
+!.env.example

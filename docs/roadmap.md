@@ -1,6 +1,6 @@
 # Roadmap de Desenvolvimento — Chave Segura
 
-**Base:** [README.md](../README.md) e [architeture.md](../.docs/architeture.md)\
+**Base:** [README.md](../README.md) e [architecture.md](architecture.md)\
 **Objetivo:** ordenar o desenvolvimento do MVP em fases com entregas e
 critérios de conclusão verificáveis.
 
