@@ -21,6 +21,8 @@ android/.kotlin/
 # Extensão
 extension/node_modules/
 extension/dist/
+extension/dist-smoke/
+extension/qr.txt
 extension/coverage/
 
 # Backend
@@ -30,6 +32,10 @@ backend/.pytest_cache/
 backend/.ruff_cache/
 backend/*.egg-info/
 backend/data/
+
+# Ferramentas de teste (cofre simulado guarda senhas fictícias em claro)
+tools/.fake_phone_state.json
+tools/__pycache__/
 *.sqlite3
 *.db
 

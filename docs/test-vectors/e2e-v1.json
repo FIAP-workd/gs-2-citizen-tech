@@ -1,0 +1,31 @@
+{
+  "description": "Vetores do canal E2E v1 (gerados por tools/gen_test_vectors.py)",
+  "extension": {
+    "seed": "AAECAwQFBgcICQoLDA0ODxAREhMUFRYXGBkaGxwdHh8",
+    "public_key": "DgIWIj8UcUPTJhWpEYnCiMFyjLo8xfn2IbECbgPYMSk"
+  },
+  "android": {
+    "seed": "ICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj8",
+    "public_key": "mfRnTsyHwLjnEvGSuPSedEKpN2tIdZZ6urooRxAZqT4"
+  },
+  "sas": "817452",
+  "extension_session": {
+    "rx": "WfivKiBhsuNf0cv7cI79J6hcmSTmuDky6KZ8kBqZmMs",
+    "tx": "F4IfaGGw-ayJeYHAHMpGtxGgr9CQENNpSJUzOQOGWvI"
+  },
+  "aad": "cs/1|0d6b7a54-3f0e-4a52-8a51-0f6b7e3b2c90|e7f0a1b2-c3d4-4e5f-8a6b-7c8d9e0f1a2b|b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e|a9d8c7b6-a5f4-4e3d-8c2b-1a0f9e8d7c6b|1763150400000|7|c3a1e0b4-9f0a-4c5e-8d1b-0a2b3c4d5e6f",
+  "envelope": {
+    "v": 1,
+    "type": "relay",
+    "msg_id": "0d6b7a54-3f0e-4a52-8a51-0f6b7e3b2c90",
+    "link_id": "e7f0a1b2-c3d4-4e5f-8a6b-7c8d9e0f1a2b",
+    "from": "b1c2d3e4-f5a6-4b7c-8d9e-0f1a2b3c4d5e",
+    "to": "a9d8c7b6-a5f4-4e3d-8c2b-1a0f9e8d7c6b",
+    "ts": 1763150400000,
+    "seq": 7,
+    "corr": "c3a1e0b4-9f0a-4c5e-8d1b-0a2b3c4d5e6f",
+    "nonce": "ZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXp7",
+    "ciphertext": "y42QdkBuzdAUg-X5x08IYihpRa-81liRBek_soJ9hsk-CzngfBhHZJfuJ3BtEtrZOziqOUEoNXtw0ZGwtcty29_gMo10VNe7Hg60lEiUqRq05eoYAT9ukEqzS8speI3e01bF8SOOkBAOZziEBX0v7RvlkS6cCIzCDJCrfsHQO7dnHgPvY_2bkZFdC4H6u7yuI7TUSqxXG2ObuucJ2oqgYIvQiGxdTd8c-Mn8OGEGzRhgvaY8PeN8vibR_IkQNWY"
+  },
+  "plaintext": "{\"kind\":\"fill.request\",\"body\":{\"request_id\":\"c3a1e0b4-9f0a-4c5e-8d1b-0a2b3c4d5e6f\",\"origin\":\"https://accounts.exemplo.com\",\"hostname\":\"accounts.exemplo.com\",\"top_level\":true}}"
+}

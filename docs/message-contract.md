@@ -120,7 +120,7 @@ O token é consumido nesta chamada, com ou sem sucesso posterior.
 
 O backend avisa a extensão com o frame `pairing.claimed` (§4.3). As
 duas telas exibem o **código de verificação (SAS)** de 6 dígitos
-definido no ADR 0001.
+definido no ADR 0001 (fórmula em §3.5).
 
 ### 3.4 Confirmar (Android → backend)
 
@@ -134,6 +134,22 @@ definido no ADR 0001.
 Resposta `200`: `{ "v": 1, "link_id": "e7f0…" }`. Com `accepted: false`
 a sessão é cancelada e o dispositivo `pending` da extensão é removido.
 O backend envia `pairing.completed` (ou `pairing.cancelled`) à extensão.
+
+### 3.5 Código de verificação (SAS)
+
+``` text
+digest = crypto_generichash(32, "chave-segura/sas/v1" || pk_extensao || pk_android)
+sas    = (uint32 big-endian dos 4 primeiros bytes de digest) mod 1 000 000, com 6 dígitos
+```
+
+Exibido como `123 456`. O valor de referência está em
+[test-vectors/e2e-v1.json](test-vectors/e2e-v1.json) e é conferido
+pelos testes da extensão e do Android.
+
+### 3.6 Erros REST
+
+Corpo de erro: `{ "v": 1, "code": "<código da §6>" }`. Corpo inválido
+devolve `400 invalid_message` sem ecoar o conteúdo recebido.
 
 ## 4. WebSocket
 
@@ -174,7 +190,7 @@ Resposta: `{ "v": 1, "type": "auth.ok", "links": ["e7f0…"] }` ou
 | `link_id`    | Vínculo de pareamento ativo entre os dois dispositivos.                |
 | `from`/`to`  | Roteamento. O backend confere que `from` é o dispositivo autenticado.  |
 | `ts`         | Horário do remetente. Janela aceita: ±60 s.                            |
-| `seq`        | Contador crescente por remetente e `link_id`.                          |
+| `seq`        | Contador crescente por remetente e `link_id`. As implementações semeiam o contador com o relógio (ms), para continuar crescente depois de reiniciar. |
 | `corr`       | Identificador opaco e aleatório da solicitação, igual em pedido e resposta. Permite ao backend acompanhar estado e expiração em `fill_requests` sem conhecer o domínio. |
 | `nonce`      | Nonce aleatório da AEAD.                                               |
 | `ciphertext` | Payload E2E (§5) cifrado, com tag.                                     |
@@ -248,6 +264,7 @@ Depois de decifrado, o payload é JSON:
     "result": "approved",
     "mode": "confirmation",
     "hostname": "accounts.exemplo.com",
+    "title": "Banco Exemplo",
     "credential": { "username": "ana@exemplo.com", "password": "…" },
     "expires_at": 1763150430000
   }
@@ -275,6 +292,45 @@ Depois de decifrado, o payload é JSON:
 
 Usado para registrar `security_events` no Android. Não contém dados
 dos campos.
+
+### 5.4 `credential.save` (extensão → Android)
+
+Enviado pelo botão **Gerar senha forte e salvar**: a extensão gera a
+senha, preenche os campos de senha nova da página e pede ao celular que
+a guarde.
+
+``` json
+{
+  "kind": "credential.save",
+  "body": {
+    "request_id": "9a1f…",
+    "origin": "https://loja.exemplo.com",
+    "hostname": "loja.exemplo.com",
+    "title": "loja.exemplo.com",
+    "username": "ana@exemplo.com",
+    "password": "…",
+    "generated": true
+  }
+}
+```
+
+O Android salva **sem pedir confirmação** se o cofre estiver aberto
+(gravar não expõe segredos). Se já existir conta com o mesmo domínio e
+usuário, a senha é atualizada.
+
+### 5.5 `credential.save.result` (Android → extensão)
+
+``` json
+{ "kind": "credential.save.result", "body": { "request_id": "9a1f…", "result": "saved", "hostname": "loja.exemplo.com" } }
+```
+
+| `result`  | Significado                                                   |
+| --------- | ------------------------------------------------------------- |
+| `saved`   | Nova conta criada no cofre                                    |
+| `updated` | Conta existente (mesmo domínio e usuário) recebeu a nova senha |
+| `locked`  | Cofre bloqueado; a extensão guarda o pedido por 5 min em memória para “Tentar salvar de novo” |
+| `denied`  | O celular recusou                                             |
+| `error`   | Dados inválidos ou falha interna                              |
 
 ## 6. Códigos de erro
 

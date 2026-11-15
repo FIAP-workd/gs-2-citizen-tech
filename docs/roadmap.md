@@ -2,7 +2,9 @@
 
 **Base:** [README.md](../README.md) e [architecture.md](architecture.md)\
 **Objetivo:** ordenar o desenvolvimento do MVP em fases com entregas e
-critérios de conclusão verificáveis.
+critérios de conclusão verificáveis.**Estado:** Fases 0 a 5 implementadas; Fase 6 com testes automatizados e
+roteiro manual em [test-plan.md](test-plan.md) (falta o teste de
+usabilidade com pessoas do público-alvo).
 
 A ordem respeita a recomendação dos documentos: primeiro o cofre local
 seguro, depois a extensão, depois o pareamento e os fluxos de

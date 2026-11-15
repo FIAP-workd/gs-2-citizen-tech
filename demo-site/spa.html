@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar (carregamento tardio) — Banco Exemplo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="card">
+  <p class="banner">O formulário aparece 2 segundos depois de abrir a página (como em sites modernos).</p>
+  <h1>Entrar</h1>
+  <div id="app"><p>Carregando…</p></div>
+  <p><a href="index.html">Voltar</a></p>
+</main>
+<script>
+  setTimeout(() => {
+    document.getElementById("app").innerHTML = `
+      <form data-demo>
+        <label>E-mail <input type="email" name="email" autocomplete="username"></label>
+        <label>Senha <input type="password" name="senha" autocomplete="current-password"></label>
+        <button type="submit">Entrar</button>
+      </form>`;
+    const s = document.createElement("script");
+    s.src = "demo.js";
+    document.body.append(s);
+  }, 2000);
+</script>
+</body>
+</html>

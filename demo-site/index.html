@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Site de demonstração — Chave Segura</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="card">
+  <p class="banner">Site fictício para testes. Use apenas contas e senhas inventadas.</p>
+  <h1>Banco Exemplo (demonstração)</h1>
+  <ul>
+    <li><a href="login.html">Entrar</a> — login convencional (usuário + senha).</li>
+    <li><a href="cadastro.html">Criar conta</a> — cadastro com senha e confirmação (gerar e salvar).</li>
+    <li><a href="armadilha.html">Página com campos ocultos</a> — a senha não pode ir para campos escondidos.</li>
+    <li><a href="spa.html">Login que aparece depois</a> — formulário montado após 2 segundos.</li>
+  </ul>
+  <p>Para testar <strong>domínio incompatível</strong>, abra a mesma página por
+    <code>http://127.0.0.1:8080/login.html</code>: o endereço é outro, então a conta salva para
+    <code>localhost</code> não pode ser usada.</p>
+</main>
+</body>
+</html>
