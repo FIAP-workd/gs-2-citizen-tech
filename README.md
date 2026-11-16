@@ -1,5 +1,17 @@
 # Chave Segura --- Especificação do Projeto
 
+> **Estado:** MVP implementado (Fases 0 a 5 do [roadmap](docs/roadmap.md)).
+> Como rodar e testar cada etapa: **[docs/test-plan.md](docs/test-plan.md)**.
+>
+> | Pasta | Conteúdo |
+> | --- | --- |
+> | [`android/`](android/README.md) | App: cofre cifrado, gerador, diagnóstico, biometria, pareamento, aprovação e modo automático |
+> | [`extension/`](extension/README.md) | Extensão Chrome: preencher login, gerar senha forte e salvar, preencher ao abrir o site |
+> | [`backend/`](backend/README.md) | Relay: pareamento por QR Code e envelopes E2E (não conhece senhas) |
+> | [`demo-site/`](demo-site/) | Site fictício de testes (login, cadastro, armadilha, formulário tardio) |
+> | [`tools/`](tools/) | Celular simulado, inspeção de banco, vetores de teste do canal E2E |
+> | [`docs/`](docs/) | Arquitetura, ADR, contrato de mensagens, modelo de ameaças, modelo de dados, guia de testes |
+
 ## 1. Visão geral
 
 **Chave Segura** é um gerenciador de senhas acessível, composto por um

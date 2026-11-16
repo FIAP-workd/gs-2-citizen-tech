@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Entrar (com campos ocultos) — Banco Exemplo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="card">
+  <p class="banner">Teste de segurança: esta página esconde campos para tentar capturar a senha.</p>
+  <h1>Entrar</h1>
+  <form data-demo>
+    <input data-trap type="password" name="captura1" style="display:none" tabindex="-1">
+    <div hidden><input data-trap type="password" name="captura2" tabindex="-1"></div>
+    <input data-trap type="password" name="captura3" style="opacity:0;position:absolute;left:-9999px" tabindex="-1">
+    <label>E-mail
+      <input type="email" name="email" autocomplete="username" required>
+    </label>
+    <label>Senha
+      <input type="password" name="senha" autocomplete="current-password" required>
+    </label>
+    <button type="submit">Entrar</button>
+  </form>
+  <p id="trap-status" class="result">OK: nenhum campo oculto recebeu a senha.</p>
+  <p><a href="index.html">Voltar</a></p>
+</main>
+<script src="demo.js"></script>
+</body>
+</html>

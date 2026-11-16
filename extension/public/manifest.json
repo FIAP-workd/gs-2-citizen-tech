@@ -1,10 +1,11 @@
 {
   "manifest_version": 3,
   "name": "Chave Segura",
-  "description": "Preenche credenciais autorizadas pelo seu celular.",
-  "version": "0.1.0",
+  "description": "Preenche e salva senhas com autorização do seu celular.",
+  "version": "1.0.0",
   "minimum_chrome_version": "120",
   "permissions": ["activeTab", "scripting", "storage"],
+  "optional_host_permissions": ["https://*/*", "http://localhost/*", "http://127.0.0.1/*", "http://*.test/*"],
   "background": {
     "service_worker": "background.js",
     "type": "module"
@@ -12,6 +13,12 @@
   "action": {
     "default_title": "Chave Segura",
     "default_popup": "popup.html"
+  },
+  "commands": {
+    "fill-login": {
+      "suggested_key": { "default": "Alt+Shift+L" },
+      "description": "Preencher o login desta página"
+    }
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"

@@ -1,6 +1,6 @@
 {
   "name": "chave-segura-extension",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Extensão Chrome (Manifest V3) do Chave Segura",
   "type": "module",
@@ -8,12 +8,18 @@
     "build": "node build.mjs",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "ci": "npm run typecheck && npm test && npm run build"
+    "ci": "npm run typecheck && npm test && npm run build",
+    "smoke": "esbuild scripts/e2e-smoke.ts --bundle --platform=node --format=esm --outfile=dist-smoke/e2e-smoke.mjs --log-level=warning && node dist-smoke/e2e-smoke.mjs"
   },
   "devDependencies": {
     "@types/chrome": "0.3.7",
     "esbuild": "0.28.2",
+    "jsdom": "31.0.1",
     "typescript": "7.0.2",
     "vitest": "5.1.0"
+  },
+  "dependencies": {
+    "libsodium-wrappers": "0.8.4",
+    "qrcode-generator": "2.0.4"
   }
 }

@@ -24,7 +24,7 @@ await build({
 // Content scripts injetados por chrome.scripting não podem ser módulos ES.
 await build({
   ...common,
-  entryPoints: { content: "src/content/index.ts" },
+  entryPoints: { content: "src/content/index.ts", autostart: "src/content/autostart.ts" },
   format: "iife",
 });
 

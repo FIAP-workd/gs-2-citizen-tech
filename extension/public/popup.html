@@ -3,14 +3,92 @@
   <head>
     <meta charset="utf-8" />
     <title>Chave Segura</title>
-    <style>
-      body { font: 16px/1.4 system-ui, sans-serif; margin: 0; padding: 16px; min-width: 280px; }
-      h1 { font-size: 20px; margin: 0 0 8px; }
-    </style>
+    <link rel="stylesheet" href="popup.css" />
   </head>
   <body>
-    <h1>Chave Segura</h1>
-    <p id="status">Carregando…</p>
+    <header>
+      <h1>Chave Segura</h1>
+      <span id="peer-status" class="pill">…</span>
+    </header>
+
+    <p id="message" class="message" role="status" aria-live="polite" hidden></p>
+
+    <!-- Sem pareamento -->
+    <section id="unpaired" hidden>
+      <div id="pair-idle">
+        <p>Conecte este computador ao seu celular para preencher senhas com segurança.</p>
+        <button id="pair-start" class="primary">Parear com o celular</button>
+      </div>
+
+      <div id="pair-waiting" hidden>
+        <p class="step">No celular, abra o <strong>Chave Segura → Computadores → Parear computador</strong> e aponte a câmera para o código:</p>
+        <canvas id="qr" width="232" height="232" aria-label="QR Code de pareamento"></canvas>
+        <p class="hint">O código vale por <strong id="countdown">2:00</strong> e só pode ser usado uma vez.</p>
+        <details>
+          <summary>Sem câmera (emulador)? Copiar o código</summary>
+          <p class="hint">No app, toque em “Colar código” e cole o texto copiado.</p>
+          <button id="copy-qr" class="secondary">Copiar código de pareamento</button>
+        </details>
+        <button id="pair-cancel" class="link">Cancelar</button>
+      </div>
+
+      <div id="pair-claimed" hidden>
+        <p class="step">O celular <strong id="claimed-name"></strong> leu o código.</p>
+        <p>Confira se o celular mostra <strong>o mesmo número</strong>:</p>
+        <p id="sas" class="sas" aria-label="Código de verificação"></p>
+        <p class="hint">Se o número for igual, confirme no celular. Se for diferente, recuse no celular.</p>
+      </div>
+    </section>
+
+    <!-- Com pareamento -->
+    <section id="paired" hidden>
+      <div class="site">
+        <span class="label">Site atual</span>
+        <strong id="site-host">—</strong>
+        <span id="site-problem" class="problem" hidden></span>
+      </div>
+
+      <button id="fill" class="primary">Preencher login</button>
+
+      <div class="generate">
+        <button id="generate" class="secondary">Gerar senha forte e salvar</button>
+        <label>
+          Tamanho
+          <select id="length">
+            <option value="16">16</option>
+            <option value="20" selected>20</option>
+            <option value="24">24</option>
+            <option value="32">32</option>
+          </select>
+        </label>
+      </div>
+      <button id="retry-save" class="secondary" hidden>Tentar salvar de novo</button>
+
+      <label class="toggle">
+        <input id="auto" type="checkbox" />
+        Preencher automaticamente ao abrir este site
+      </label>
+      <p class="hint">Atalho de teclado: <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> preenche o login da página.</p>
+    </section>
+
+    <details id="settings-box">
+      <summary>Configurações</summary>
+      <form id="settings">
+        <label>Endereço do servidor
+          <input id="relay-url" type="url" required placeholder="http://localhost:8000" />
+        </label>
+        <label>Nome deste computador
+          <input id="device-name" type="text" required maxlength="64" />
+        </label>
+        <label class="toggle">
+          <input id="allow-dev" type="checkbox" />
+          Modo de desenvolvimento: aceitar sites de teste em HTTP (localhost e *.test)
+        </label>
+        <button type="submit" class="secondary">Salvar configurações</button>
+      </form>
+      <button id="unpair" class="danger" hidden>Desconectar este computador do celular</button>
+    </details>
+
     <script type="module" src="popup.js"></script>
   </body>
 </html>

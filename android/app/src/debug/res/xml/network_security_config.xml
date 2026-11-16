@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Apenas na build de depuração: permite o relay local em HTTP/WS
+  (ex.: http://10.0.2.2:8000 no emulador ou o IP do computador na rede).
+-->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true" />
+</network-security-config>
