@@ -149,6 +149,7 @@ class RequestCoordinator(
                 SecureChannel(
                     crypto, device.linkId, secrets.ownDeviceId, device.peerDeviceId,
                     secrets.publicKey, secrets.secretKey, B64.decode(device.peerPublicKey),
+                    initialTxSeq = device.lastTxSeq, initialRxSeq = device.lastRxSeq,
                 )
             }.getOrNull()
         } else {
@@ -284,6 +285,7 @@ class RequestCoordinator(
         // O estado do dispositivo é relido a cada mensagem (pode ter sido revogado).
         val device = devices.get(link.device.id) ?: return
         if (device.status != DeviceStatus.ACTIVE) return
+        devices.updateRxSeq(device.id, envelope.seq)
         val body = payload.optJSONObject("body") ?: return
         if (body.optString("request_id") != envelope.corr) return
         when (payload.optString("kind")) {
@@ -295,10 +297,12 @@ class RequestCoordinator(
         }
     }
 
-    private fun send(link: Link, requestId: String, kind: String, body: JSONObject) {
+    private suspend fun send(link: Link, requestId: String, kind: String, body: JSONObject) {
         val channel = link.channel ?: return
         val payload = JSONObject().put("kind", kind).put("body", body.put("request_id", requestId))
-        link.client.send(channel.seal(payload, requestId).toJson())
+        val envelope = channel.seal(payload, requestId)
+        devices.updateTxSeq(link.device.id, envelope.seq)
+        link.client.send(envelope.toJson())
     }
 
     private fun fillReply(hostname: String, result: String) = JSONObject()
@@ -409,7 +413,7 @@ class RequestCoordinator(
         val hostname = Domains.normalize(body.optString("hostname"))
         val username = body.optString("username").trim()
         val password = body.optString("password")
-        fun reply(result: String) = send(
+        suspend fun reply(result: String) = send(
             link, requestId, "credential.save.result",
             JSONObject().put("result", result).put("hostname", hostname ?: body.optString("hostname")),
         )

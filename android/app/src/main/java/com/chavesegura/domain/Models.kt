@@ -60,6 +60,8 @@ data class TrustedDevice(
     val relayUrl: String,
     val peerDeviceId: String,
     val pendingRevocation: Boolean,
+    val lastTxSeq: Long = 0L,
+    val lastRxSeq: Long = -1L,
 )
 
 data class SecurityEvent(

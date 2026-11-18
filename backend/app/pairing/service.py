@@ -15,6 +15,7 @@ from app.config import Settings
 from app.devices.service import Device, create_device
 from app.errors import RelayError
 from app.persistence.db import Database
+from app.persistence.maintenance import expire_pairing_sessions_in_tx
 from app.security.tokens import hash_token, new_id, new_token, token_matches
 
 
@@ -50,6 +51,7 @@ def create_session(
     token = new_token()
     expires_at = now + settings.pairing_ttl_ms
     with db.transaction() as conn:
+        expire_pairing_sessions_in_tx(conn, now=now, confirm_ttl_ms=settings.confirm_ttl_ms)
         device, device_token = create_device(
             conn, kind="extension", name=device_name, public_key=public_key, now=now
         )
@@ -75,6 +77,8 @@ def claim_session(
         # Token errado é tratado como sessão inexistente, sem consumir a sessão.
         if row is None or not token_matches(pairing_token, row["token_hash"]):
             raise RelayError("pairing_not_found", 404)
+        if row["status"] == "expired":
+            raise RelayError("pairing_expired", 410)
         if row["status"] != "open":
             raise RelayError("pairing_used", 409)
         if now > row["expires_at"]:
@@ -113,6 +117,8 @@ def confirm_session(
         row = conn.execute("SELECT * FROM pairing_sessions WHERE id = ?", (pairing_id,)).fetchone()
         if row is None or row["android_device_id"] != android_device_id:
             raise RelayError("pairing_not_found", 404)
+        if row["status"] == "expired":
+            raise RelayError("pairing_expired", 410)
         if row["status"] != "claimed":
             raise RelayError("pairing_used", 409)
         if now > row["claimed_at"] + settings.confirm_ttl_ms:

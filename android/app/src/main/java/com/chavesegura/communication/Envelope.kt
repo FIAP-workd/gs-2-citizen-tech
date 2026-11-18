@@ -69,9 +69,15 @@ data class Envelope(
 class ReplayException(message: String) : Exception(message)
 
 /** Anti-replay: msg_id único, janela de ±60 s e seq estritamente crescente. */
-class ReplayGuard(private val clock: () -> Long = System::currentTimeMillis) {
-    private var lastSeq = -1L
+class ReplayGuard(
+    private val clock: () -> Long = System::currentTimeMillis,
+    initialLastSeq: Long = -1L,
+) {
+    private var lastSeq = initialLastSeq
     private val seen = LinkedHashMap<String, Long>()
+
+    val currentLastSeq: Long
+        @Synchronized get() = lastSeq
 
     @Synchronized
     fun check(envelope: Envelope) {

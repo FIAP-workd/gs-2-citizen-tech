@@ -22,6 +22,13 @@ interface CredentialDao {
     @Query("SELECT * FROM credentials WHERE website_domain = :domain")
     suspend fun byDomain(domain: String): List<CredentialEntity>
 
+    @Query("SELECT * FROM credentials WHERE category_id = :categoryId ORDER BY title COLLATE NOCASE")
+    suspend fun byCategory(categoryId: String): List<CredentialEntity>
+
+    /** Evita carregar os BLOBs cifrados em memória só para verificar domínios parecidos. */
+    @Query("SELECT DISTINCT website_domain FROM credentials")
+    suspend fun allDomains(): List<String>
+
     @Upsert
     suspend fun upsert(entity: CredentialEntity)
 
@@ -36,6 +43,9 @@ interface CategoryDao {
 
     @Query("SELECT COUNT(*) FROM categories")
     suspend fun count(): Int
+
+    @Query("SELECT EXISTS(SELECT 1 FROM categories WHERE id = :id)")
+    suspend fun exists(id: String): Boolean
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(items: List<CategoryEntity>)
@@ -64,6 +74,9 @@ interface TrustedDeviceDao {
     @Query("SELECT * FROM trusted_devices WHERE id = :id")
     suspend fun byId(id: String): TrustedDeviceEntity?
 
+    @Query("SELECT * FROM trusted_devices WHERE link_id = :linkId")
+    suspend fun byLinkId(linkId: String): TrustedDeviceEntity?
+
     @Upsert
     suspend fun upsert(entity: TrustedDeviceEntity)
 
@@ -79,6 +92,12 @@ interface TrustedDeviceDao {
     @Query("UPDATE trusted_devices SET last_seen = :at WHERE id = :id")
     suspend fun touch(id: String, at: Long)
 
+    @Query("UPDATE trusted_devices SET last_tx_seq = MAX(last_tx_seq, :seq) WHERE id = :id")
+    suspend fun updateTxSeq(id: String, seq: Long)
+
+    @Query("UPDATE trusted_devices SET last_rx_seq = MAX(last_rx_seq, :seq) WHERE id = :id")
+    suspend fun updateRxSeq(id: String, seq: Long)
+
     @Query("DELETE FROM trusted_devices WHERE id = :id")
     suspend fun delete(id: String)
 }
@@ -88,6 +107,15 @@ interface SecurityEventDao {
     @Query("SELECT * FROM security_events ORDER BY timestamp DESC LIMIT 300")
     fun observeRecent(): Flow<List<SecurityEventEntity>>
 
+    @Query("SELECT COUNT(*) FROM security_events")
+    suspend fun count(): Int
+
     @Insert
     suspend fun insert(event: SecurityEventEntity)
+
+    @Query(
+        "DELETE FROM security_events WHERE id NOT IN " +
+            "(SELECT id FROM security_events ORDER BY timestamp DESC LIMIT :keepCount)",
+    )
+    suspend fun pruneOld(keepCount: Int)
 }

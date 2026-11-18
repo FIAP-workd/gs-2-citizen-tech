@@ -78,6 +78,10 @@ class DeviceRepository(
 
     suspend fun touch(id: String) = dao.touch(id, clock())
 
+    suspend fun updateTxSeq(id: String, seq: Long) = dao.updateTxSeq(id, seq)
+
+    suspend fun updateRxSeq(id: String, seq: Long) = dao.updateRxSeq(id, seq)
+
     suspend fun delete(id: String) = dao.delete(id)
 
     private fun toDomain(row: TrustedDeviceEntity) = TrustedDevice(
@@ -92,5 +96,7 @@ class DeviceRepository(
         relayUrl = row.relayUrl,
         peerDeviceId = row.peerDeviceId,
         pendingRevocation = row.pendingRevocation,
+        lastTxSeq = row.lastTxSeq,
+        lastRxSeq = row.lastRxSeq,
     )
 }

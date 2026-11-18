@@ -76,6 +76,22 @@ class ReplayGuardTest {
             guard.check(it)
             guard.accept(it)
         }
+        assertEquals(2L, guard.currentLastSeq)
+    }
+
+    @Test(expected = ReplayException::class)
+    fun `sequencia persistida entre reinicios impede replay`() {
+        val restored = ReplayGuard(clock = { 1_000_000 }, initialLastSeq = 42L)
+        restored.check(envelope("m-old", 1_000_000, 42L))
+    }
+
+    @Test
+    fun `sequencia maior que a persistida e aceita apos reinicio`() {
+        val restored = ReplayGuard(clock = { 1_000_000 }, initialLastSeq = 42L)
+        val next = envelope("m-new", 1_000_000, 43L)
+        restored.check(next)
+        restored.accept(next)
+        assertEquals(43L, restored.currentLastSeq)
     }
 }
 

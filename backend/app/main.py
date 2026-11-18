@@ -3,6 +3,8 @@
 from __future__ import annotations
 
 import logging
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
@@ -16,6 +18,7 @@ from app.config import PROTOCOL_VERSION, Settings
 from app.context import AppContext
 from app.errors import RelayError
 from app.persistence.db import Database
+from app.persistence.maintenance import expire_stale_records, purge_expired_records
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
 
@@ -25,6 +28,23 @@ def create_app(ctx: AppContext | None = None) -> FastAPI:
         settings = Settings.from_env()
         ctx = AppContext(settings=settings, db=Database(settings.database_path))
 
+    @asynccontextmanager
+    async def lifespan(_: FastAPI) -> AsyncIterator[None]:
+        now = ctx.clock()
+        expire_stale_records(
+            ctx.db,
+            now=now,
+            confirm_ttl_ms=ctx.settings.confirm_ttl_ms,
+            fill_request_ttl_ms=ctx.settings.fill_request_ttl_ms,
+        )
+        purge_expired_records(
+            ctx.db,
+            now=now,
+            pairing_retention_ms=ctx.settings.pairing_retention_ms,
+            fill_request_retention_ms=ctx.settings.fill_request_retention_ms,
+        )
+        yield
+
     app = FastAPI(
         title="Chave Segura — Relay",
         version="1.0.0",
@@ -32,6 +52,7 @@ def create_app(ctx: AppContext | None = None) -> FastAPI:
         docs_url=None,
         redoc_url=None,
         openapi_url=None,
+        lifespan=lifespan,
     )
     app.state.ctx = ctx
 

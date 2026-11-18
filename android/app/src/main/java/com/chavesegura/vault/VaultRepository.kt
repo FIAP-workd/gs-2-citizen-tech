@@ -172,7 +172,7 @@ class VaultRepository(
 
     /** Domínios salvos que se parecem com o hostname (para alertar sobre imitações). */
     suspend fun lookalikeDomains(hostname: String): List<String> =
-        credentials.all().map { it.websiteDomain }.distinct().filter { Domains.looksLike(hostname, it) }
+        credentials.allDomains().filter { Domains.looksLike(hostname, it) }
 
     suspend fun diagnosticInputs(): List<DiagnosticInput> = withContext(Dispatchers.Default) {
         credentials.all().map { row ->
@@ -214,6 +214,7 @@ class VaultRepository(
         require(password.isNotEmpty()) { "Informe a senha." }
         val existing = id?.let { credentials.byId(it) }
         val credentialId = existing?.id ?: UUID.randomUUID().toString()
+        val validCategoryId = categoryId?.takeIf { db.categories().exists(it) }
         val cipher = session.cipher()
         val now = clock()
         credentials.upsert(
@@ -223,7 +224,7 @@ class VaultRepository(
                 usernameEncrypted = cipher.seal(credentialId, FIELD_USERNAME, username.trim()),
                 passwordEncrypted = cipher.seal(credentialId, FIELD_PASSWORD, password),
                 websiteDomain = domain,
-                categoryId = categoryId,
+                categoryId = validCategoryId,
                 notesEncrypted = notes.takeIf { it.isNotBlank() }?.let { cipher.seal(credentialId, FIELD_NOTES, it) },
                 sensitive = sensitive,
                 createdAt = existing?.createdAt ?: now,

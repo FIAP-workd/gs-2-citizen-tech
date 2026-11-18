@@ -20,14 +20,22 @@ class SecureChannel(
     ownSecretKey: ByteArray,
     peerPublicKey: ByteArray,
     private val clock: () -> Long = System::currentTimeMillis,
+    initialTxSeq: Long = 0L,
+    initialRxSeq: Long = -1L,
 ) {
     private val rx: ByteArray
     private val tx: ByteArray
-    private val guard = ReplayGuard(clock)
+    private val guard = ReplayGuard(clock, initialLastSeq = initialRxSeq)
     private val random = SecureRandom()
 
-    /** Semeado com o relógio: continua crescente mesmo depois de reiniciar o app. */
-    private var seq: Long = clock()
+    /** Semeado com o máximo entre relógio e último seq persistido: nunca regride. */
+    private var seq: Long = maxOf(clock(), initialTxSeq)
+
+    val currentTxSeq: Long
+        @Synchronized get() = seq
+
+    val currentRxSeq: Long
+        get() = guard.currentLastSeq
 
     init {
         val keys = crypto.serverSessionKeys(ownPublicKey, ownSecretKey, peerPublicKey)
