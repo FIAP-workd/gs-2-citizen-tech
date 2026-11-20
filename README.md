@@ -1,6 +1,5 @@
 # Chave Segura --- Especificação do Projeto
 
-> **Estado:** MVP implementado (Fases 0 a 5 do [roadmap](docs/roadmap.md)).
 > Como rodar e testar cada etapa: **[docs/test-plan.md](docs/test-plan.md)**.
 >
 > | Pasta | Conteúdo |
@@ -39,6 +38,10 @@ Muitas pessoas têm dificuldade para criar, memorizar, recuperar e
 organizar senhas. Isso pode levar à reutilização da mesma senha em
 vários serviços, ao registro de credenciais em locais desprotegidos ou à
 dependência de terceiros para acessar contas pessoais.
+
+A motivação do Chave Segura vem a partir de um membro da minha família um pouco mais idoso, que com dificuldades de manutenção de senhas, acabou sendo vítima de golpes, e o principal ponto que motivou esse golpe foi a permanência de dados de acesso no seu notebook. 
+
+Pessoas com baixa familiaridade tecnológica são mais propensos a esses golpes contra sua segurança, e para isso, um gerenciador de senhas simples, que possui uma interface controlada quase que todo o tempo via celular, pode facilitar os acessos.
 
 O Chave Segura busca oferecer:
 
